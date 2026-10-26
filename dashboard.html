@@ -56,6 +56,14 @@ h3{margin:2rem 0 .75rem; font-size:1rem}
 ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:.5rem}
 li{border:2px solid var(--ink); border-radius:999px; padding:.3rem .85rem; font-size:.95rem}
 .note{margin:1rem 0 0; font-size:.9rem; color:var(--muted)}
+.btn-out{
+  display:block; margin:0 0 .75rem; padding:.9rem 1rem; text-align:center; text-decoration:none;
+  border:2px solid var(--ink); border-radius:999px; background:#FFFFFF; color:var(--ink);
+  font-family:"Bricolage Grotesque","Arial Black",Impact,sans-serif;
+  font-weight:800; font-size:1.125rem; letter-spacing:.03em;
+}
+.btn-out:hover{background:#EEF1FB}
+.btn-out:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
 </style>
 </head>
 <body>
@@ -90,6 +98,9 @@ li{border:2px solid var(--ink); border-radius:999px; padding:.3rem .85rem; font-
     <li>Released</li>
   </ul>
   <p class="note">This search shows logging status only, not case files.</p>
+  <h3>For police</h3>
+  <a class="btn-out" href="add-arrest.html">Add arrest record</a>
+  <a class="btn-out" href="add-medical.html">Add medical checkup</a>
 </main>
 <script>
 document.getElementById("f").addEventListener("submit",function(e){
