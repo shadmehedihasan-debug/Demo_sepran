@@ -93,7 +93,7 @@ document.getElementById("f").addEventListener("submit",function(e){
   s.textContent="Login isn’t connected yet.";
 });
 document.getElementById("demo").addEventListener("click",function(){
-  document.getElementById("s").textContent="DEMO login isn’t connected yet.";
+  window.location.href="dashboard.html";
 });
 document.getElementById("back").addEventListener("click",function(e){
   if(history.length>1&&document.referrer){e.preventDefault();history.back();}
