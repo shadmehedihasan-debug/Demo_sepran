@@ -105,6 +105,7 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
 </main>
 </div>
 <script>
+function postJson(url,body){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return {};}).then(function(d){return {ok:r.ok,status:r.status,d:d};});});}
 var ids=["aid","hospital","doctor","notes","checked"];
 document.getElementById("f").addEventListener("submit",function(e){
   e.preventDefault();
@@ -112,8 +113,23 @@ document.getElementById("f").addEventListener("submit",function(e){
   for(var i=0;i<ids.length;i++){
     if(!document.getElementById(ids[i]).value.trim()){s.textContent="Fill in the arrest ID, hospital, doctor ID, injury notes and exam time."; return;}
   }
-  s.textContent="Saving isn\u2019t connected yet.";
+  var stages={"Before remand":"Pre_Remand","After remand":"Post_Remand"};
+  s.textContent="Saving...";
+  postJson("/api/medical",{
+    arrest_id:document.getElementById("aid").value.trim(),
+    stage:stages[document.getElementById("stage").value],
+    hospital_name:document.getElementById("hospital").value.trim(),
+    doctor_id:document.getElementById("doctor").value.trim(),
+    injury_notes:document.getElementById("notes").value.trim(),
+    checked_at:new Date(document.getElementById("checked").value).toISOString()
+  }).then(function(x){
+    if(x.status===401){s.textContent="Log in as police to save records.";return;}
+    if(!x.ok){s.textContent=x.d.error||"Could not save the record.";return;}
+    s.textContent="Saved.";
+    document.getElementById("f").reset();
+  }).catch(function(){s.textContent="Can\u2019t reach the server. Try again.";});
 });
+document.querySelector(".logout").addEventListener("click",function(e){e.preventDefault();var h=this.href;fetch("/api/logout",{method:"POST"}).then(function(){window.location.href=h;},function(){window.location.href=h;});});
 document.getElementById("back").addEventListener("click",function(e){
   if(history.length>1&&document.referrer){e.preventDefault();history.back();}
 });

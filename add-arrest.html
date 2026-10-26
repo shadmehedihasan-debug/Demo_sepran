@@ -94,7 +94,7 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
       <label for="arrested">Date and time of arrest</label>
       <input id="arrested" name="arrested" type="datetime-local" autocomplete="off">
       <label for="status">Status</label>
-      <select id="status" name="status"><option>Active</option><option>Logged on time</option><option>Late log penalty triggered</option><option>Remand</option><option>Released</option></select>
+      <select id="status" name="status"><option>Active</option><option>Logged on time</option><option>Remand</option><option>Released</option></select>
       <button type="submit">Save record</button>
       <p class="status" id="s" role="status" aria-live="polite"></p>
     </form>
@@ -103,6 +103,7 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
 </main>
 </div>
 <script>
+function postJson(url,body){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return {};}).then(function(d){return {ok:r.ok,status:r.status,d:d};});});}
 var ids=["name","nid","station","arrested"];
 document.getElementById("f").addEventListener("submit",function(e){
   e.preventDefault();
@@ -110,8 +111,22 @@ document.getElementById("f").addEventListener("submit",function(e){
   for(var i=0;i<ids.length;i++){
     if(!document.getElementById(ids[i]).value.trim()){s.textContent="Fill in the detainee name, NID, station and arrest time."; return;}
   }
-  s.textContent="Saving isn\u2019t connected yet.";
+  var map={"Active":"Active","Logged on time":"Logged_On_Time","Remand":"Remand","Released":"Released"};
+  s.textContent="Saving...";
+  postJson("/api/arrests",{
+    detainee_name:document.getElementById("name").value.trim(),
+    nid:document.getElementById("nid").value.trim(),
+    station:document.getElementById("station").value.trim(),
+    arrested_at:new Date(document.getElementById("arrested").value).toISOString(),
+    status:map[document.getElementById("status").value]
+  }).then(function(x){
+    if(x.status===401){s.textContent="Log in as police to save records.";return;}
+    if(!x.ok){s.textContent=x.d.error||"Could not save the record.";return;}
+    s.textContent="Saved. Arrest ID: "+x.d.arrest_id+(x.d.late?" (logged late, penalty triggered)":"");
+    document.getElementById("f").reset();
+  }).catch(function(){s.textContent="Can\u2019t reach the server. Try again.";});
 });
+document.querySelector(".logout").addEventListener("click",function(e){e.preventDefault();var h=this.href;fetch("/api/logout",{method:"POST"}).then(function(){window.location.href=h;},function(){window.location.href=h;});});
 document.getElementById("back").addEventListener("click",function(e){
   if(history.length>1&&document.referrer){e.preventDefault();history.back();}
 });

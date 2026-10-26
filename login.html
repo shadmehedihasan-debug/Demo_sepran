@@ -84,13 +84,18 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
   <p class="note">* You can’t create account. Collect your account from your senior officer</p>
 </main>
 <script>
+function postJson(url,body){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return {};}).then(function(d){return {ok:r.ok,status:r.status,d:d};});});}
 document.getElementById("f").addEventListener("submit",function(e){
   e.preventDefault();
   var s=document.getElementById("s");
   if(!document.getElementById("pid").value.trim()||!document.getElementById("pw").value){
     s.textContent="Enter your POLICE ID and password."; return;
   }
-  s.textContent="Login isn’t connected yet.";
+  s.textContent="Signing in...";
+  postJson("/api/login",{police_id:document.getElementById("pid").value.trim(),password:document.getElementById("pw").value})
+  .then(function(x){
+    if(x.ok){window.location.href="dashboard.html";} else {s.textContent=x.d.error||"Login failed.";}
+  }).catch(function(){s.textContent="Can’t reach the server. Try again.";});
 });
 document.getElementById("demo").addEventListener("click",function(){
   window.location.href="dashboard.html";

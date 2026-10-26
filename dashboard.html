@@ -67,6 +67,8 @@ h3{margin:2rem 0 .75rem; font-size:1rem}
 ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:.5rem}
 li{border:2px solid var(--ink); border-radius:999px; padding:.3rem .85rem; font-size:.95rem}
 .note{margin:1rem 0 0; font-size:.9rem; color:var(--muted)}
+.res{margin-top:1rem; padding-top:1rem; border-top:2px solid var(--ink)}
+.res div{margin-top:.25rem}
 </style>
 </head>
 <body>
@@ -97,6 +99,7 @@ li{border:2px solid var(--ink); border-radius:999px; padding:.3rem .85rem; font-
       <input id="station" name="station" type="text" autocomplete="off">
       <button type="submit">Search</button>
       <p class="status" id="s" role="status" aria-live="polite"></p>
+      <div id="results"></div>
     </form>
   </div>
   <h3>Status you may see</h3>
@@ -111,6 +114,8 @@ li{border:2px solid var(--ink); border-radius:999px; padding:.3rem .85rem; font-
 </main>
 </div>
 <script>
+var LABEL={Active:"Active",Logged_On_Time:"Logged on time",Late_Log_Penalty_Triggered:"Late log penalty triggered",Remand:"Remand",Released:"Released"};
+function fmt(t){return new Date(t).toLocaleString();}
 document.getElementById("f").addEventListener("submit",function(e){
   e.preventDefault();
   var nid=document.getElementById("nid").value.trim();
@@ -120,8 +125,25 @@ document.getElementById("f").addEventListener("submit",function(e){
   if(!nid&&!(name&&station)){
     s.textContent="Enter an NID, or a full name and a police station."; return;
   }
-  s.textContent="Search isn\u2019t connected yet.";
+  var box=document.getElementById("results"); box.textContent="";
+  s.textContent="Searching...";
+  var q=nid?"nid="+encodeURIComponent(nid):"name="+encodeURIComponent(name)+"&station="+encodeURIComponent(station);
+  fetch("/api/search?"+q).then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});}).then(function(x){
+    if(!x.ok){s.textContent=x.d.error||"Search failed.";return;}
+    var list=x.d.results;
+    if(!list.length){s.textContent="No record found.";return;}
+    s.textContent=list.length+(list.length===1?" record found.":" records found.");
+    list.forEach(function(r){
+      var div=document.createElement("div"); div.className="res";
+      var b=document.createElement("strong"); b.textContent=r.detainee_name; div.appendChild(b);
+      [["Station",r.station_name],["Status",LABEL[r.status]||r.status],["Arrested",fmt(r.arrest_timestamp)],["Logged",fmt(r.digital_log_timestamp)]].forEach(function(p){
+        var l=document.createElement("div"); l.textContent=p[0]+": "+p[1]; div.appendChild(l);
+      });
+      box.appendChild(div);
+    });
+  }).catch(function(){s.textContent="Can\u2019t reach the server. Try again.";});
 });
+document.querySelector(".logout").addEventListener("click",function(e){e.preventDefault();var h=this.href;fetch("/api/logout",{method:"POST"}).then(function(){window.location.href=h;},function(){window.location.href=h;});});
 document.getElementById("back").addEventListener("click",function(e){
   if(history.length>1&&document.referrer){e.preventDefault();history.back();}
 });

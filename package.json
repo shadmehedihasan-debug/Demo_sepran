@@ -1,0 +1,13 @@
+{
+  "name": "demo-unit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DEMO UNIT: arrest logging and family lookup",
+  "engines": { "node": ">=18" },
+  "scripts": { "create-user": "node scripts/create-user.js" },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3"
+  }
+}
