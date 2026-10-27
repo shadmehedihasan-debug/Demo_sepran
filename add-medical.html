@@ -65,6 +65,13 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
 .status{min-height:1.4em; margin:1rem 0 0; text-align:center}
 .note{margin:1rem 0 0; font-size:.9rem; color:var(--muted)}
 ::placeholder{color:#7C839F; opacity:1}
+.addphoto{margin:0 0 1rem; background:#FFFFFF; color:var(--ink); border:2px solid var(--ink)}
+.addphoto:hover{background:#EEF1FB; filter:none}
+.thumbs{display:flex; flex-wrap:wrap; gap:.75rem; margin:0 0 1.25rem}
+.thumbs:empty{display:none}
+.thumb{position:relative; width:84px; height:84px}
+.thumb img{display:block; width:100%; height:100%; object-fit:cover; border:2px solid var(--ink); border-radius:6px}
+.thumb button{position:absolute; top:-9px; right:-9px; width:28px; height:28px; padding:0; border:2px solid #FFFFFF; border-radius:50%; background:var(--ink); color:#FFFFFF; font:700 1rem/1 system-ui,sans-serif; letter-spacing:0}
 </style>
 </head>
 <body>
@@ -96,6 +103,10 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
       <input id="doctor" name="doctor" type="text" autocomplete="off" placeholder="e.g. DOC-2045">
       <label for="notes">Injury notes</label>
       <textarea id="notes" name="notes" placeholder="e.g. No external injuries observed"></textarea>
+      <label for="addphoto">Documents (photos, up to 5)</label>
+      <input id="photos" type="file" accept="image/jpeg,image/png" multiple hidden>
+      <button type="button" class="addphoto" id="addphoto">Add photo</button>
+      <div class="thumbs" id="thumbs"></div>
       <label for="checked">Time of examination</label>
       <input id="checked" name="checked" type="datetime-local" autocomplete="off">
       <button type="submit">Save record</button>
@@ -107,6 +118,31 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
 </div>
 <script>
 function postJson(url,body){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return {};}).then(function(d){return {ok:r.ok,status:r.status,d:d};});});}
+var photos=[];
+var photoInput=document.getElementById("photos"), thumbs=document.getElementById("thumbs");
+function renderPhotos(){
+  thumbs.textContent="";
+  photos.forEach(function(p,i){
+    var d=document.createElement("div"); d.className="thumb";
+    var img=document.createElement("img"); img.src=p.url; img.alt="Photo "+(i+1);
+    var b=document.createElement("button"); b.type="button"; b.setAttribute("aria-label","Remove photo "+(i+1)); b.textContent="\u00d7";
+    b.addEventListener("click",function(){URL.revokeObjectURL(p.url); photos.splice(i,1); renderPhotos();});
+    d.appendChild(img); d.appendChild(b); thumbs.appendChild(d);
+  });
+}
+document.getElementById("addphoto").addEventListener("click",function(){photoInput.click();});
+photoInput.addEventListener("change",function(){
+  var msg=document.getElementById("s"); msg.textContent="";
+  Array.prototype.forEach.call(photoInput.files,function(f){
+    if(!/^image\/(jpeg|png)$/.test(f.type)){msg.textContent="Only JPG or PNG photos can be added.";return;}
+    if(photos.length>=5){msg.textContent="You can add up to 5 photos.";return;}
+    photos.push({file:f,url:URL.createObjectURL(f)});
+  });
+  photoInput.value=""; renderPhotos();
+});
+document.getElementById("f").addEventListener("reset",function(){
+  photos.forEach(function(p){URL.revokeObjectURL(p.url);}); photos=[]; renderPhotos();
+});
 var ids=["aid","hospital","doctor","notes","checked"];
 document.getElementById("f").addEventListener("submit",function(e){
   e.preventDefault();
