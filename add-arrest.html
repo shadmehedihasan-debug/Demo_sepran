@@ -64,6 +64,7 @@ button:hover{filter:brightness(1.25)}
 button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
 .status{min-height:1.4em; margin:1rem 0 0; text-align:center}
 .note{margin:1rem 0 0; font-size:.9rem; color:var(--muted)}
+::placeholder{color:#7C839F; opacity:1}
 </style>
 </head>
 <body>
@@ -86,11 +87,11 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
   <div class="box">
     <form id="f" novalidate>
       <label for="name">Detainee name</label>
-      <input id="name" name="name" type="text" autocomplete="off">
+      <input id="name" name="name" type="text" autocomplete="off" placeholder="e.g. Abdul Karim">
       <label for="nid">NID number</label>
-      <input id="nid" name="nid" type="text" autocomplete="off">
+      <input id="nid" name="nid" type="text" autocomplete="off" placeholder="e.g. 1234567890123">
       <label for="station">Police station</label>
-      <input id="station" name="station" type="text" autocomplete="off">
+      <input id="station" name="station" type="text" autocomplete="off" placeholder="e.g. Gulshan Police Station">
       <label for="arrested">Date and time of arrest</label>
       <input id="arrested" name="arrested" type="datetime-local" autocomplete="off">
       <label for="status">Status</label>

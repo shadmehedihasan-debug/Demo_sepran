@@ -69,6 +69,7 @@ li{border:2px solid var(--ink); border-radius:999px; padding:.3rem .85rem; font-
 .note{margin:1rem 0 0; font-size:.9rem; color:var(--muted)}
 .res{margin-top:1rem; padding-top:1rem; border-top:2px solid var(--ink)}
 .res div{margin-top:.25rem}
+::placeholder{color:#7C839F; opacity:1}
 </style>
 </head>
 <body>
@@ -91,12 +92,12 @@ li{border:2px solid var(--ink); border-radius:999px; padding:.3rem .85rem; font-
   <div class="box">
     <form id="f" novalidate>
       <label for="nid">National ID (NID) number</label>
-      <input id="nid" name="nid" type="text" inputmode="numeric" autocomplete="off">
+      <input id="nid" name="nid" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 1234567890123">
       <p class="or">or</p>
       <label for="name">Full name</label>
-      <input id="name" name="name" type="text" autocomplete="off">
+      <input id="name" name="name" type="text" autocomplete="off" placeholder="e.g. Abdul Karim">
       <label for="station">Police station</label>
-      <input id="station" name="station" type="text" autocomplete="off">
+      <input id="station" name="station" type="text" autocomplete="off" placeholder="e.g. Gulshan Police Station">
       <button type="submit">Search</button>
       <p class="status" id="s" role="status" aria-live="polite"></p>
       <div id="results"></div>

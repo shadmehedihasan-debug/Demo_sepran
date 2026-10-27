@@ -59,6 +59,7 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
 .back:focus-visible{outline:3px solid #FFFFFF; outline-offset:-3px}
 .status{min-height:1.4em; margin:1rem 0 0; font-size:.95rem; text-align:center}
 .note{margin:0 -.75rem; text-align:center; white-space:nowrap; font-size:clamp(.55rem,2.5vw,.85rem); line-height:1.4; color:#C8102E}
+::placeholder{color:#7C839F; opacity:1}
 </style>
 </head>
 <body>
@@ -73,9 +74,9 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
   <div class="box">
     <form id="f" novalidate>
       <label for="pid">POLICE ID</label>
-      <input id="pid" name="pid" type="text" autocomplete="username" required>
+      <input id="pid" name="pid" type="text" autocomplete="username" required placeholder="e.g. 12345">
       <label for="pw">Password</label>
-      <input id="pw" name="pw" type="password" autocomplete="current-password" required>
+      <input id="pw" name="pw" type="password" autocomplete="current-password" required placeholder="e.g. your account password">
       <button type="submit">Login</button>
       <button type="button" class="demo" id="demo">DEMO login</button>
       <p class="status" id="s" role="status" aria-live="polite"></p>

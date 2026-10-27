@@ -64,6 +64,7 @@ button:hover{filter:brightness(1.25)}
 button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
 .status{min-height:1.4em; margin:1rem 0 0; text-align:center}
 .note{margin:1rem 0 0; font-size:.9rem; color:var(--muted)}
+::placeholder{color:#7C839F; opacity:1}
 </style>
 </head>
 <body>
@@ -86,15 +87,15 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:4px}
   <div class="box">
     <form id="f" novalidate>
       <label for="aid">Arrest ID</label>
-      <input id="aid" name="aid" type="text" autocomplete="off">
+      <input id="aid" name="aid" type="text" autocomplete="off" placeholder="e.g. ARR-3F9A1C20B4">
       <label for="stage">Stage</label>
       <select id="stage" name="stage"><option>Before remand</option><option>After remand</option></select>
       <label for="hospital">Hospital name</label>
-      <input id="hospital" name="hospital" type="text" autocomplete="off">
+      <input id="hospital" name="hospital" type="text" autocomplete="off" placeholder="e.g. Dhaka Medical College Hospital">
       <label for="doctor">Doctor ID</label>
-      <input id="doctor" name="doctor" type="text" autocomplete="off">
+      <input id="doctor" name="doctor" type="text" autocomplete="off" placeholder="e.g. DOC-2045">
       <label for="notes">Injury notes</label>
-      <textarea id="notes" name="notes"></textarea>
+      <textarea id="notes" name="notes" placeholder="e.g. No external injuries observed"></textarea>
       <label for="checked">Time of examination</label>
       <input id="checked" name="checked" type="datetime-local" autocomplete="off">
       <button type="submit">Save record</button>
